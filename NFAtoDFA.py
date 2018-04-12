@@ -13,49 +13,99 @@ def main():
     # Insert text into a dictionary
     NFA_dic = convert_to_dictionary(text, alphabet)
 
+    # Crate new states
+    DFA_dic = create_new_states(NFA_dic, alphabet)
 
-def create_new_states(NFA_dic, alphabet)
+    print("DFA: ", DFA_dic)
+
+
+def create_new_states(NFA_dic, alphabet):
     """Create new states. For example, 0-1 needs to
     also be represented as a state."""
-    # Copying the first state transition to the DFA
-    DFA_dic = {0: NFA_dic[0]}
+    # Copy the first state transition to the DFA
+    DFA_dic = {'0': NFA_dic['0']}
 
-    # Create following states for the DFA
-    for state in DFA_dic.keys():
+    # Get all states' names in DFA_dic (originally one only,
+    # but this list gets appended states at the end of for loop).
+    states_list = list(DFA_dic.keys())
+
+    # Create other states of the DFA
+    for state in states_list:
+        print("Current State: ", state)
+        
         # Get next states of state
         next_states_dic = DFA_dic[state]
+        print("\tNext States: ", next_states_dic)
 
+        # For every possible transition from current state
         for character in next_states_dic.keys():
-            next_state = next_states_dic[character]
+            print("\t\tWith ", character)
+
+            next_state = remove_duplicates(next_states_dic[character])
+            print("\t\t\tIts next state is: ", next_state)
+
             # If next state exists in DFA, ignore and continue
-            if next_state in DFA_dic:
+            if next_state in DFA_dic.keys():
                 continue
+
+            # If next state is in NFA, copy its next states
+            if next_state in NFA_dic.keys():
+                DFA_dic[next_state] = NFA_dic[next_state]
+                continue
+
             # If next state doesn't exist, create it
-            # But first, check if it's a state made out 
-            # of more than 1 state
+
+            # If it's a state made out of more than one state, then 
+            # determine its next states by joining the next states
+            # of each single state
             if len(next_state) > 1:
                 state_components = next_state.split("-")
 
                 with_a = set()
                 with_b = set()
 
-                for s in state_components:        # [0, 1]
-                    dict_of_next_states = NFA[s]  # {'a': 0, 'b': 1}  {'a': 1, 'b': 2}
+                for s in state_components:
+                    dict_of_next_states = NFA_dic[s] 
                     with_a.add(dict_of_next_states['a'])
                     with_b.add(dict_of_next_states['b'])
 
+                state_with_a = remove_duplicates(join_states(with_a))
+                state_with_b = remove_duplicates(join_states(with_b))
 
-                # for set_ in [with_a, with_b]:
-                #     if len(set_) == 1:
-                #         DFA_dic[set_[0]] = NFA_dic[set_[0]]
-                #     if "D" in set_:
-                #         set_.remove("D")
+                dic = {'a': state_with_a,
+                       'b': state_with_b}
 
+                print("\t\t\t\tNew next states for this state: ", dic)
+                DFA_dic[next_state] = dic
 
+            # If the state is made out of itself only, then copy its
+            # next states from the NFA
             else:
-                DFA_dic[state] = NFA_dic[state]
+                DFA_dic[next_state] = NFA_dic[next_state]
+            
+            # Update list in which it is iterating
+            states_list.append(next_state)
+
+    return DFA_dic
 
 
+def join_states(set_):
+    """"""
+    if len(set_) > 1 and "e" in set_:
+        set_.remove("e")
+        return "-".join(list(set_))
+
+    if len(set_) > 1 and "e" not in set_:
+        return "-".join(sorted(list(set_)))
+
+    if len(set_) == 1:
+        return "".join(list(set_))
+
+
+def remove_duplicates(string):
+    """"""
+    a = "-".join(sorted(list(set(x for x in string.split("-")))))
+    return a
 
 def get_alphabet(text):
     """Return a list of the elements in the alphabet."""
@@ -84,8 +134,7 @@ def convert_to_dictionary(text, alphabet):
             
         dic[cur_state] = next_states_dic 
 
-    print(dic)
-    return None
+    return dic
 
 if __name__ == "__main__":
     main()
