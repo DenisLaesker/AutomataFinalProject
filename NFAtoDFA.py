@@ -3,15 +3,19 @@
 """Convert a Non-Deterministic Finite Automata
 to Deterministic Finite Automata."""
 
+# TODO: Replace 'e' for 'D' in the process of converting to DFA
+
 def main():
-    file_obj = open("input.txt", "r")
+    file_obj = open("input.txt", 'r')
     text = file_obj.read()
 
     # Get alphabet in NFA
     alphabet = get_alphabet(text)
 
-    # Insert text into a dictionary
-    NFA_dic = convert_to_dictionary(text, alphabet)
+    # Get text into a dictionary and a list of final states
+    NFA_dic, finals = convert_to_dictionary(text, alphabet)
+
+    print("Finals: ", finals)
 
     # Crate new states
     DFA_dic = create_new_states(NFA_dic, alphabet)
@@ -90,41 +94,51 @@ def create_new_states(NFA_dic, alphabet):
 
 
 def join_states(set_):
-    """"""
-    if len(set_) > 1 and "e" in set_:
-        set_.remove("e")
-        return "-".join(list(set_))
+    """Given a set of characters, join them with a '-' """
+    if len(set_) > 1 and 'e' in set_:
+        set_.remove('e')
+        return '-'.join(list(set_))
 
-    if len(set_) > 1 and "e" not in set_:
-        return "-".join(sorted(list(set_)))
+    if len(set_) > 1 and 'e' not in set_:
+        return '-'.join(sorted(list(set_)))
 
     if len(set_) == 1:
-        return "".join(list(set_))
+        return ''.join(list(set_))
 
 
 def remove_duplicates(string):
-    """"""
-    a = "-".join(sorted(list(set(x for x in string.split("-")))))
-    return a
+    """Remove duplicate characters from a '-' divided string """
+    return '-'.join(sorted(list(set(x for x in string.split('-')))))
+
 
 def get_alphabet(text):
     """Return a list of the elements in the alphabet."""
     first_line = text.splitlines()[0]
 
-    return [x.strip() for x in first_line.split(",")[1:]]
+    return [x.strip() for x in first_line.split(',')[1:]]
 
 
 def convert_to_dictionary(text, alphabet):
-    """Insert """
-    rows = text.splitlines()[1:] # Ignore first line
+    """Copy info in text to a dictionary."""
+     # List of final states
+    finals = []
+    # Dictionary to store NFA in file
     dic = {}
 
+    # Get rows in file
+    rows = text.splitlines()[1:] # Ignore first line
+
+    # Parse each row to store next states of each state
     for row in rows:
         column_list = row.split(',')
         
         # Store first column in key and rest in list
         cur_state, next_states_list = column_list[0], column_list[1:]
         
+        if '*' in cur_state:
+            cur_state = cur_state.replace('*', '')
+            finals.append(cur_state)
+
         # Get rid of spaces and tabs
         next_states_list = [x.strip() for x in next_states_list]
 
@@ -134,7 +148,8 @@ def convert_to_dictionary(text, alphabet):
             
         dic[cur_state] = next_states_dic 
 
-    return dic
+    return dic, finals
 
 if __name__ == "__main__":
     main()
+
