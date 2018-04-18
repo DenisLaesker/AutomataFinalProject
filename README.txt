@@ -1,16 +1,16 @@
 #####################################
-#	COT4210 - Final Project			#
-#	Instructor: 					#
-#	Group Members: Patricia Wilthew	#
-#				   Griffin Hocker	#
-#				   Denis Laesker	#
+#	COT4210 - Final Project			      
+#	Instructor: 					            
+#	Group Members: Patricia Wilthew	  
+#				         Griffin Hocker     
+#				         Denis Laesker      
 #####################################
-#  NFA-DFA Conversion Instructions  #
+#  NFA-DFA Conversion Instructions  
 #####################################
 
-###############
-# Input File: #
-#############################################################
+#################################################################
+# Input File
+#################################################################
 # A file named input.txt has been provided to serve as model
 # The format is as follows:
 # State,  a,      b
@@ -30,10 +30,8 @@
 # 0,      0-1,    0
 # 1,      e,      2-1
 # 2*,     1,      e
-############################################################
-
-##########################
-# How to run the script: #
+################################################################
+# How to run the script
 ################################################################
 # 
 # Python 3 must be installed
