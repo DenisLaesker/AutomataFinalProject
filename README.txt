@@ -2,8 +2,8 @@
 #	COT4210 - Final Project			      
 #	Instructor: 					            
 #	Group Members: Patricia Wilthew	  
-#				         Griffin Hocker     
-#				         Denis Laesker      
+#				   Griffin Hocker     
+#				   Denis Laesker      
 #####################################
 #  NFA-DFA Conversion Instructions  
 #####################################
@@ -33,12 +33,11 @@
 ################################################################
 # How to run the script
 ################################################################
-# 
 # Python 3 must be installed
 # 
 # The script takes a command line argument (argv[1])
-# In the Terminal, type: python NFAtoDFA.py <name of your file>
+# In the Terminal, type: ./NFAtoDFA.py <name of your file>
 #
-# 	Example: python NFAtoDFA input.txt
+# Example: ./NFAtoDFA input.txt
 #
 ################################################################
