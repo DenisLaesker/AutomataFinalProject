@@ -47,7 +47,7 @@ def nfa_to_dfa(NFA_dic):
         # For every possible transition from current state
         for character, next_state in transitions.items():
 
-            # If next state exists in DFA, ignore and continue
+            # If next state already exists in DFA, ignore and continue
             if next_state in DFA_dic.keys():
                 continue
 
@@ -55,31 +55,39 @@ def nfa_to_dfa(NFA_dic):
             if next_state in NFA_dic.keys():
                 DFA_dic[next_state] = NFA_dic[next_state]
                 continue
-
             # If next_state has not been created, create it
             # If it is composed by more than one state, determine those
             # states transitions and join these states as one state.
-            if len(next_state) > 1:
+            elif:
+                # Get individual components (states) that conform the state
                 state_components = next_state.split("-")
-
+                
+                # Initialize empty sets
                 with_a = set()
                 with_b = set()
 
+                # For every component, get its transition states with 'a' and save
+                # them in its own set; same for 'b'
                 for s in state_components:
                     dict_of_next_states = NFA_dic[s]
                     with_a.add(dict_of_next_states['a'])
                     with_b.add(dict_of_next_states['b'])
 
+                # Put together the transition states with 'a'; same for 'b'
+                # Example 1: set(1, 2) will become "1-2"
+                # Example 2: set(2, e) will become "2"
+                # Example 3: set(e) will become "D" 
                 state_with_a = remove_duplicates(join_states(with_a))
                 state_with_b = remove_duplicates(join_states(with_b))
 
+                # Create dictionary of transitions for the state
                 dic = {'a': state_with_a,
                        'b': state_with_b}
 
-                # Assign new next transitions for this state
+                # Assign new transitions for this state
                 DFA_dic[next_state] = dic
 
-            # Update list in which this for-loop is iterating
+            # Update list of states in which this for-loop is iterating
             states_list.append(next_state)
 
     return DFA_dic
